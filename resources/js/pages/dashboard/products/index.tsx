@@ -19,9 +19,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ]
 
+const getSortDirection = (column: Column<Product>) => {
+    const sort = (new URL(window.location.href)).searchParams.get('sort') || ''
+    if (sort === column.id) {
+        return 'asc'
+    } else if (sort === `-${column.id}`) {
+        return 'desc'
+    }
+    return 'asc'
+}
+
 const toggleSort = (column: Column<Product>) => {
     router.reload({
-        data: { sort: ((new URLSearchParams(window.location.href)).get('sort') || '') === column.id ? `-${column.id}` : column.id },
+        data: { sort: getSortDirection(column) === 'asc' ? `-${column.id}` : column.id },
         only: ['products']
     })
 }

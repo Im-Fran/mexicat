@@ -6,6 +6,9 @@ import DashboardLayout from '@/layouts/dashboard/dashboard-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormProvider, useForm as useReactHookForm } from 'react-hook-form';
+import { Camera } from 'lucide-react';
+import * as Dialog from '@/components/ui/dialog';
+import Quagga from 'quagga';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,6 +47,38 @@ const CreateProduct = () => {
     const onSubmit = form.handleSubmit((data) => {
         inertiaForm.post(route('dashboard.products.store'));
     });
+
+    const openBarcodeScanner = () => {
+        window.Quagga = Quagga
+        Quagga.init({
+            inputStream: {
+                type: 'LiveStream',
+                constraints: {
+                    facingMode: 'environment',
+                },
+                target: document.getElementById('interactive'),
+            },
+            decoder: {
+                readers: ['ean_reader'],
+            },
+        }, (err) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            Quagga.start();
+        });
+
+        Quagga.onDetected((data: unknown) => {
+            console.log({
+                msg: 'Quagga',
+                data
+            })
+            const code = data.codeResult.code;
+            inertiaForm.setData('barcode', code);
+            Quagga.stop();
+        });
+    }
 
     return (
         <DashboardLayout breadcrumbs={breadcrumbs}>
@@ -109,14 +144,38 @@ const CreateProduct = () => {
                                             <FormItem>
                                                 <FormLabel htmlFor="barcode">Código de Barras</FormLabel>
                                                 <FormControl>
-                                                    <Input
-                                                        placeholder="Código de barras"
-                                                        {...field}
-                                                        onChange={(e) => {
-                                                            field.onChange(e);
-                                                            inertiaForm.setData('barcode', e.target.value);
-                                                        }}
-                                                    />
+                                                    <div className={'flex gap-2'}>
+                                                        <Input
+                                                            placeholder="Código de barras"
+                                                            {...field}
+                                                            onChange={(e) => {
+                                                                field.onChange(e);
+                                                                inertiaForm.setData('barcode', e.target.value);
+                                                            }}
+                                                        />
+                                                        <Dialog.Dialog>
+                                                            <Dialog.DialogTrigger asChild>
+                                                                {/*<Button onClick={openBarcodeScanner} variant={'outline'} type={'button'}>*/}
+                                                                {/*    <Camera className={'w-6 h-6'}/>*/}
+                                                                {/*</Button>*/}
+                                                            </Dialog.DialogTrigger>
+
+                                                            <Dialog.DialogContent>
+                                                                <Dialog.DialogTitle>Escáner de Código de Barras</Dialog.DialogTitle>
+                                                                <Dialog.DialogDescription>
+                                                                    Escanea un código de barras para agregarlo al producto.
+                                                                </Dialog.DialogDescription>
+                                                                <div className={'flex justify-center mt-4'}>
+                                                                    <div id="interactive" className="w-full h-64 bg-gray-200">
+                                                                        <p className="text-center">Escanea un código de barras</p>
+                                                                    </div>
+                                                                </div>
+                                                                <Dialog.DialogClose asChild>
+                                                                    <Button variant="secondary">Cerrar</Button>
+                                                                </Dialog.DialogClose>
+                                                            </Dialog.DialogContent>
+                                                        </Dialog.Dialog>
+                                                    </div>
                                                 </FormControl>
                                                 {inertiaForm.errors.barcode && (
                                                     <p className="text-destructive text-sm">{inertiaForm.errors.barcode}</p>
