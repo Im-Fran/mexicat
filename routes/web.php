@@ -23,6 +23,33 @@ Route::middleware(['auth', ValidateSessionWithWorkOS::class, Authorize::using('d
 
         Route::delete('/delete/{product}', [Dashboard\ProductController::class, 'destroy'])->name('dashboard.products.delete');
     });
+
+    Route::middleware([Authorize::using('dashboard.customers')])->prefix('customers')->group(function() {
+        Route::get('/', [Dashboard\CustomerController::class, 'index'])->name('dashboard.customers.index');
+
+        Route::get('/edit/{customer}', [Dashboard\CustomerController::class, 'edit'])->middleware([Authorize::using('dashboard.customers.edit.*')])->name('dashboard.customers.edit');
+        Route::patch('/edit/{customer}', [Dashboard\CustomerController::class, 'update'])->middleware([Authorize::using('dashboard.customers.update.*')])->name('dashboard.customers.update');
+
+        Route::delete('/delete/{customer}', [Dashboard\CustomerController::class, 'destroy'])->middleware([Authorize::using('dashboard.customers.delete.*')])->name('dashboard.customers.delete');
+    });
+
+    Route::middleware([Authorize::using('dashboard.roles')])->prefix('roles')->group(function() {
+        Route::get('/', [Dashboard\RoleController::class, 'index'])->name('dashboard.roles.index');
+        Route::get('/create', [Dashboard\RoleController::class, 'create'])->name('dashboard.roles.create');
+        Route::post('/create', [Dashboard\RoleController::class, 'store'])->name('dashboard.roles.store');
+
+        Route::get('/edit/{role}', [Dashboard\RoleController::class, 'edit'])->name('dashboard.roles.edit');
+        Route::patch('/edit/{role}', [Dashboard\RoleController::class, 'update'])->name('dashboard.roles.update');
+
+        Route::delete('/delete/{role}', [Dashboard\RoleController::class, 'destroy'])->name('dashboard.roles.delete');
+    });
+
+    Route::middleware([Authorize::using('dashboard.permissions')])->prefix('permissions')->group(function() {
+        Route::get('/', [Dashboard\PermissionsController::class, 'index'])->name('dashboard.permissions.index');
+        Route::post('/create', [Dashboard\PermissionsController::class, 'store'])->name('dashboard.permissions.store');
+        Route::patch('/edit/{permission}', [Dashboard\PermissionsController::class, 'update'])->name('dashboard.permissions.update');
+        Route::delete('/delete/{permission}', [Dashboard\PermissionsController::class, 'destroy'])->name('dashboard.permissions.delete');
+    });
 });
 
 require __DIR__.'/auth.php';

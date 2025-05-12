@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PaginatedResponse } from '@/types';
-import { router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
@@ -61,12 +61,16 @@ export function PaginatedDataTable<TData, TValue>({ columns, data }: DataTablePr
         </div>
         <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-2">
-                <Button disabled={data.first_page_url === null} onClick={() => data.first_page_url !== null && router.visit(data.first_page_url || '#')} variant={'outline'}>
-                    <ChevronsLeft className="w-4 h-4" />
-                </Button>
-                <Button disabled={data.prev_page_url === null} onClick={() => data.prev_page_url !== null && router.visit(data.prev_page_url || '#') } variant={'outline'}>
-                    <ChevronLeft className="w-4 h-4" />
-                </Button>
+                <Link href={data.first_page_url || '#'} prefetch>
+                    <Button variant={'outline'}>
+                        <ChevronsLeft className="w-4 h-4" />
+                    </Button>
+                </Link>
+                <Link href={data.prev_page_url || '#'} prefetch>
+                    <Button variant={'outline'}>
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                </Link>
             </div>
 
             <span className="text-sm text-muted-foreground">
@@ -74,12 +78,16 @@ export function PaginatedDataTable<TData, TValue>({ columns, data }: DataTablePr
             </span>
 
             <div className="flex items-center space-x-2">
-                <Button disabled={data.next_page_url === null} onClick={() => data.next_page_url !== null && router.visit(data.next_page_url || '#')} variant={'outline'}>
-                    <ChevronRight className="w-4 h-4" />
-                </Button>
-                <Button disabled={data.last_page_url === null} onClick={() => data.last_page_url !== null && router.visit(data.last_page_url || '#')} variant={'outline'}>
-                    <ChevronsRight className="w-4 h-4" />
-                </Button>
+                <Link href={data.next_page_url || '#'} prefetch>
+                    <Button variant={'outline'}>
+                        <ChevronRight className="w-4 h-4" />
+                    </Button>
+                </Link>
+                <Link href={data.last_page_url || '#'} prefetch>
+                    <Button variant={'outline'}>
+                        <ChevronsRight className="w-4 h-4" />
+                    </Button>
+                </Link>
             </div>
         </div>
     </div>;

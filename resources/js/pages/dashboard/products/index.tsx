@@ -4,18 +4,20 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { PaginatedDataTable } from '@/components/data-table/paginated-data-table';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Edit, Plus, Trash } from 'lucide-react';
+import { ArrowUpDown, Edit, Plus, Search, Trash } from 'lucide-react';
 import dayjs from 'dayjs';
 import ConfirmationButton from '@/components/confirmation-button';
+import { Input } from '@/components/ui/input';
+import { FormEvent, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Panel de Control',
-        href: '/dashboard',
+        href: route('dashboard.overview'),
     },
     {
         title: 'Productos',
-        href: '/dashboard/products',
+        href: route('dashboard.products.index'),
     },
 ]
 
@@ -93,17 +95,46 @@ type ProductsProps = {
 }
 
 const Products = ({ products }: ProductsProps) => {
+    const url = new URL(window.location.href);
+    const [searchTerm, setSearchTerm] = useState<string>(url.searchParams.get('filter[name]') || '');
+
+    const handleSearch = (e: FormEvent) => {
+        e.preventDefault();
+        router.get(route('dashboard.products.index'), {
+            'filter[name]': searchTerm
+        }, {
+            preserveState: true,
+            only: ['products']
+        });
+    }
+
     return <DashboardLayout breadcrumbs={breadcrumbs}>
         <Head title={"Productos"} />
 
         <div className={'p-5'}>
             <div className={'flex items-center justify-between w-full'}>
                 <h1 className={'text-2xl font-bold mb-5'}>Productos</h1>
-                <Link href={route('dashboard.products.create')}>
-                    <Button>
-                        Crear <Plus className={'w-4 h-4'}/>
-                    </Button>
-                </Link>
+            </div>
+
+            <div className="mb-4">
+                <form onSubmit={handleSearch} className="flex gap-2">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                        <Input
+                            type="text"
+                            placeholder="Buscar por nombre..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9"
+                        />
+                    </div>
+                    <Button type="submit">Buscar</Button>
+                    <Link href={route('dashboard.products.create')} prefetch>
+                        <Button type={"button"}>
+                            <Plus className={'w-4 h-4'}/>
+                        </Button>
+                    </Link>
+                </form>
             </div>
 
             <PaginatedDataTable

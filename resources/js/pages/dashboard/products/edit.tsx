@@ -16,15 +16,15 @@ const EditProduct = ({ product }: EditProductProps) => {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Panel de Control',
-            href: '/dashboard',
+            href: route('dashboard.overview'),
         },
         {
             title: 'Productos',
-            href: '/dashboard/products',
+            href: route('dashboard.products.index'),
         },
         {
             title: 'Editar Producto',
-            href: `/dashboard/products/edit/${product.id}`,
+            href: route('dashboard.products.edit', { product: product.id }),
         },
     ];
 
@@ -38,6 +38,7 @@ const EditProduct = ({ product }: EditProductProps) => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
+        e.stopPropagation()
         patch(route('dashboard.products.update', { product: product.id }));
     };
 

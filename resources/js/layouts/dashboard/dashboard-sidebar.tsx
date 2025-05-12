@@ -8,28 +8,28 @@ import { BookOpen, BoxIcon, Folder, LayoutGrid, UsersIcon } from 'lucide-react';
 const mainNavItems: NavItem[] = [
     {
         title: 'Panel de Control',
-        href: '/dashboard',
+        href: route('dashboard.overview'),
         icon: LayoutGrid,
     },
     {
         title: 'Productos',
-        href: '/dashboard/products',
+        href: route('dashboard.products.index'),
         icon: BoxIcon,
     },
     {
-        title: 'Usuarios',
-        href: '/dashboard/users',
+        title: 'Clientes',
+        href: route('dashboard.customers.index'),
         icon: UsersIcon,
     },
     {
-        title: 'Permisos',
-        href: '/dashboard/permissions',
-        icon: BookOpen,
+        title: 'Roles',
+        href: route('dashboard.roles.index'),
+        icon: Folder,
     },
     {
-        title: 'Roles',
-        href: '/dashboard/roles',
-        icon: Folder,
+        title: 'Permisos',
+        href: route('dashboard.permissions.index'),
+        icon: BookOpen,
     },
 ];
 

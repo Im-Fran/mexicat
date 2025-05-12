@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\CreateProductRequest;
 use App\Http\Requests\Dashboard\UpdateProductRequest;
 use App\Models\Product;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductController extends Controller {
@@ -25,10 +27,14 @@ class ProductController extends Controller {
         return inertia('dashboard/products/create');
     }
 
+    /**
+     * @throws FileIsTooBig
+     * @throws FileDoesNotExist
+     */
     public function store(CreateProductRequest $request) {
-        $data = $request->all();
-
-        $product = Product::create($data);
+        $product = Product::create($request->except('images'));
+        if($request->has('images')) $product->addMediaFromRequest('images')
+            ->toMediaCollection();
 
         return redirect()->route('dashboard.products.edit', ['product' => $product->id])->with('success', 'Producto creado correctamente.');
     }

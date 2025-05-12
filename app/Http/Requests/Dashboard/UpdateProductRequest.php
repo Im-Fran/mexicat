@@ -13,6 +13,8 @@ class UpdateProductRequest extends FormRequest {
             'barcode' => ['nullable', 'string', 'max:100', Rule::unique('products')->ignore($this->product)],
             'price' => ['required', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
     }
 
