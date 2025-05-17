@@ -61,6 +61,23 @@ export interface PaginatedResponse<T> {
     total: number;
 }
 
+export interface Media<T> {
+    id: number;
+    uuid: string;
+    name: string;
+    original_url: string;
+    thumbnail_url: string;
+    mime_type: string;
+    size: number;
+    disk: string;
+    model_id: number;
+    model_type: string;
+    order_column?: number | null;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
 export interface User {
     id: number;
     name: string;
@@ -72,18 +89,27 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Tag {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
 export interface Product {
     id: number;
     parent_id?: number;
     name: string;
     sku?: string;
     barcode?: string;
-    image?: string;
     description?: string;
     stock: number;
     min_stock: number;
     price: number;
     created_at: string;
     updated_at: string;
+    tags?: Tag[];
+    media?: Media<Product>[];
     [key: string]: unknown; // This allows for additional properties...
 }

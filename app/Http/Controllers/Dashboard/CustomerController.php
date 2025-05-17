@@ -21,6 +21,7 @@ class CustomerController extends Controller {
     }
 
     public function edit(User $customer) {
+        $customer->load('roles');
         return inertia('dashboard/customers/edit', [
             'customer' => $customer,
         ]);

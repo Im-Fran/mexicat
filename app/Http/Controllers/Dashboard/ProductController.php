@@ -33,8 +33,10 @@ class ProductController extends Controller {
      */
     public function store(CreateProductRequest $request) {
         $product = Product::create($request->except('images'));
-        if($request->has('images')) $product->addMediaFromRequest('images')
-            ->toMediaCollection();
+        if ($request->has('images')) {
+            $product->addMediaFromRequest('images')
+                ->toMediaCollection();
+        }
 
         return redirect()->route('dashboard.products.edit', ['product' => $product->id])->with('success', 'Producto creado correctamente.');
     }

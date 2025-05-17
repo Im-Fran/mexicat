@@ -17,6 +17,7 @@
         "spatie/laravel-medialibrary": "^11.12",
         "spatie/laravel-permission": "^6.17",
         "spatie/laravel-query-builder": "^6.3",
+        "spatie/laravel-tags": "^4.10",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

@@ -2,13 +2,16 @@
 
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductsController;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Support\Facades\Route;
 use Laravel\WorkOS\Http\Middleware\ValidateSessionWithWorkOS;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::middleware(['auth', ValidateSessionWithWorkOS::class])->group(function() {});
+Route::prefix('products')->group(function() {
+    Route::get('/', [ProductsController::class, 'index'])->name('products.index');
+});
 
 Route::middleware(['auth', ValidateSessionWithWorkOS::class, Authorize::using('dashboard.overview')])->prefix('dashboard')->group(function() {
     Route::get('/', Dashboard\OverviewController::class)->name('dashboard.overview');
