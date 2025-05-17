@@ -113,3 +113,12 @@ export interface Product {
     media?: Media<Product>[];
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Region {
+    id: number;
+    name: string;
+}
+
+export type CartItem = Product & {
+    cartQuantity: number;
+};

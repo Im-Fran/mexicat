@@ -13,6 +13,7 @@ class PermissionsController extends Controller {
             ->allowedSorts(['name', 'created_at', 'updated_at'])
             ->defaultSort('-created_at')
             ->paginate(10);
+
         return inertia('dashboard/permissions/index', [
             'permissions' => $permissions,
         ]);
@@ -22,6 +23,7 @@ class PermissionsController extends Controller {
         $permission = Permission::create([
             'name' => request('name'),
         ]);
+
         return redirect()->back()->with('success', 'Permiso creado correctamente.');
     }
 
@@ -29,11 +31,13 @@ class PermissionsController extends Controller {
         $permission->update([
             'name' => request('name'),
         ]);
+
         return redirect()->back()->with('success', 'Permiso actualizado correctamente.');
     }
 
     public function destroy(Permission $permission) {
         $permission->delete();
+
         return redirect()->back()->with('success', 'Permiso eliminado correctamente.');
     }
 }

@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# We asume that the current directory is the root of the project. If the script includes '--no-interaction' then we don't want to ask for input, and assume all questions as 'yes'.
+args=("$@")
+
+flags=()
+for arg in "${args[@]}"; do
+    if [ "$arg" == "--no-interaction" ]; then
+        flags+=("no_interaction")
+    elif [ "$arg" == "--force-update" ]; then
+        flags+=("force_update")
+    elif [ "$arg" == "--help" ]; then
+        echo "Usage: update [--no-interaction] [--force-update]"
+        exit 0
+    else
+        echo "Invalid argument: $arg"
+        exit 1
+    fi
+done
+
+git fetch
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse @{u})
+
+if [ "$LOCAL" == "$REMOTE" ] && [[ ! " ${flags[@]} " =~ "force_update" ]]; then
+    echo "Already up to date."
+    exit 0
+fi
+
+if [[ " ${flags[@]} " =~ "no_interaction" ]]; then
+    if [ "$LOCAL" != "$REMOTE" ]; then
+        echo "Pulling changes..."
+        git pull
+    fi
+
+    echo "Installing composer dependencies..."
+    composer install --no-interaction --no-dev --optimize-autoloader
+
+    echo "Running migrations..."
+    php artisan migrate --force
+
+    echo "Clearing cache..."
+    php artisan optimize:clear
+    php artisan icons:clear
+
+    echo "Caching configuration..."
+    php artisan optimize
+
+    echo "Building assets..."
+    bun install && bun run build
+    echo "Update completed."
+    exit 0
+fi
+
+if [ "$LOCAL" != "$REMOTE" ]; then
+    read -p "Do you want to pull changes? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        git pull
+    fi
+fi
+
+read -p "Do you want to install composer dependencies? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    composer install --no-dev --optimize-autoloader
+fi
+
+read -p "Do you want to run migrations? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    php artisan migrate --force
+fi
+
+read -p "Do you want to update cache? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    php artisan optimize:clear
+    php artisan optimize
+fi
+
+read -p "Do you want to build assets? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    bun install && bun run build
+fi
+
+echo "Update completed."

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductsController;
@@ -11,6 +12,15 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::prefix('products')->group(function() {
     Route::get('/', [ProductsController::class, 'index'])->name('products.index');
+});
+
+Route::prefix('cart')->group(function() {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
 });
 
 Route::middleware(['auth', ValidateSessionWithWorkOS::class, Authorize::using('dashboard.overview')])->prefix('dashboard')->group(function() {

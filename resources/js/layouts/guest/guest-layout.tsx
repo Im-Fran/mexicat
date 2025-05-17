@@ -5,7 +5,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 import { SharedData } from '@/types';
 import { SiInstagram } from '@icons-pack/react-simple-icons';
 import { Link, usePage } from '@inertiajs/react';
-import { LogOut, UserIcon } from 'lucide-react';
+import { LogOut, ShoppingCart, UserIcon } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 export const GuestLayout = ({ children }: PropsWithChildren) => {
@@ -17,18 +17,16 @@ export const GuestLayout = ({ children }: PropsWithChildren) => {
             {/* Nav Bar */}
             <div className="border-b-foreground flex w-full border-b py-5">
                 <div className="container mx-auto flex justify-between">
-                    <Link className="text-primary flex items-center justify-center gap-4" href={route('home')}>
+                    <Link className="text-primary flex items-center justify-center gap-4" href={route('home')} prefetch>
                         <img src={'/images/logo.webp'} alt={'Mexicat Market'} className={'h-12 w-12 rounded-full'} />
                         <h1 className={'text-primary text-xl font-semibold'}>Mexicat Market</h1>
                     </Link>
 
                     <div className="flex items-center justify-center">
                         <div className="flex items-center justify-end gap-4">
-                            <Link href={route('home')}>Inicio</Link>
-                            <Link href={route('products.index')}>Productos</Link>
-                            {hasPermission('admin.dashboard.overview') && (
-                                <Link href={route('dashboard.overview')}>Panel de Control</Link>
-                            )}
+                            <Link href={route('home')} prefetch>Inicio</Link>
+                            <Link href={route('products.index')} prefetch>Productos</Link>
+                            {hasPermission('admin.dashboard.overview') && <Link href={route('dashboard.overview')} prefetch>Panel de Control</Link>}
                         </div>
                     </div>
 
@@ -39,15 +37,15 @@ export const GuestLayout = ({ children }: PropsWithChildren) => {
                             </Badge>
                         </a>
 
-                        {auth.user ? (
-                            <Link href={route('logout')} method={'post'}>
-                                <LogOut className={'w-6'} />
-                            </Link>
-                        ) : (
-                            <Link href={route('login')}>
-                                <UserIcon className={'w-6'} />
-                            </Link>
-                        )}
+                        <Link href={route('cart.index')}>
+                            <ShoppingCart className={"w-6"}/>
+                        </Link>
+
+                        {auth.user ? <Link href={route('logout')} method={'post'}>
+                            <LogOut className={'w-6'} />
+                        </Link> : <Link href={route('login')} prefetch>
+                            <UserIcon className={'w-6'} />
+                        </Link>}
                     </div>
                 </div>
             </div>

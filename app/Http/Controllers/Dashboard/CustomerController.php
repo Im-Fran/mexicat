@@ -22,6 +22,7 @@ class CustomerController extends Controller {
 
     public function edit(User $customer) {
         $customer->load('roles');
+
         return inertia('dashboard/customers/edit', [
             'customer' => $customer,
         ]);
@@ -29,6 +30,7 @@ class CustomerController extends Controller {
 
     public function update(UpdateCustomerRequest $request, User $customer) {
         $customer->update($request->all());
+
         return redirect()->route('dashboard.customers.index')->with('success', 'Cliente actualizado correctamente.');
     }
 

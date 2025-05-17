@@ -14,8 +14,8 @@ use Spatie\Tags\HasTags;
 
 class Product extends Model implements HasMedia {
     use HasFactory,
-        InteractsWithMedia,
         HasTags,
+        InteractsWithMedia,
         SoftDeletes;
 
     protected $fillable = [

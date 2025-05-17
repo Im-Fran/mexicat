@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Copy .env if needed
+if [ ! -f .env ]; then
+    cp .env.example .env
+    NEEDS_KEYGEN=true
+fi
+
+# Install dependencies
+if [ ! -d node_modules ]; then
+    bun install
+fi
+
+# Build the project
+if [ ! -d public/build ]; then
+    bun build
+fi
+
+# Install dependencies for the server
+if [ ! -d vendor ]; then
+    composer install --optimize-autoloader
+fi
+
+# Generate the application key
+if [ "$NEEDS_KEYGEN" = true ]; then
+    php artisan key:generate
+fi
+
+# Migrate the database
+php artisan migrate:fresh --seed
