@@ -262,7 +262,7 @@ export default function AddressesPage({ addresses, regions, countries }: Address
                                         </div>
                                         <p className="text-sm">{address.street}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {address.city}, {address.}, C.P. {address.postal_code}
+                                            {address.city}, {regions.find(it => it.id.toString() === address.region)?.name}, C.P. {address.postal_code}
                                         </p>
                                     </div>
                                 ))}
