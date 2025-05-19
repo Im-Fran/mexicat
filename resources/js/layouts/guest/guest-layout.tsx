@@ -1,5 +1,4 @@
-import { AppContent } from '@/components/app-content';
-import { AppShell } from '@/components/app-shell';
+import { AppShell, AppContent } from '@/layouts/app-layout';
 import { Badge } from '@/components/ui/badge';
 import { usePermissions } from '@/hooks/use-permissions';
 import { SharedData } from '@/types';

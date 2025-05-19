@@ -89,6 +89,58 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Address {
+    id: number;
+    user_id: number;
+    name: string;
+    street: string;
+    city: string;
+    region: string;
+    country: string;
+    postal_code: string;
+    is_default: boolean;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Timezone {
+    zoneName: string;
+    gmtOffset: string;
+    gmtOffsetName: string;
+    abbreviation: string;
+    tzName: string;
+}
+
+export interface Country {
+    id: number;
+    name: string;
+    iso3: string;
+    iso2: string;
+    numeric_code: string;
+    phonecode: string;
+    capital: string;
+    currency: string;
+    currency_name: string;
+    currency_symbol: string;
+    tld: string;
+    native: string;
+    region: string;
+    region_id: number;
+    subregion: string;
+    subregion_id: number;
+    nationality: string;
+    timezones: Timezone[];
+    translations: {
+        [key: string]: string;
+    };
+    latitude: string;
+    longitude: string;
+    emoji: string;
+    emojiU: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
 export interface Tag {
     id: number;
     name: string;

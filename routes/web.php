@@ -1,14 +1,33 @@
 <?php
 
+use App\Http\Controllers\Account;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Middleware\Owns;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Support\Facades\Route;
 use Laravel\WorkOS\Http\Middleware\ValidateSessionWithWorkOS;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::prefix('account')->middleware(['auth', ValidateSessionWithWorkOS::class])->group(function() {
+    Route::get('/', [AccountController::class, 'index'])->name('account.index');
+    Route::patch('/', [AccountController::class, 'update'])->name('account.update');
+
+    Route::get('/security', [AccountController::class, 'security'])->name('account.security');
+
+    Route::prefix('addresses')->group(function() {
+        Route::get('/', [Account\AddressController::class, 'index'])->name('account.addresses');
+        Route::post('/', [Account\AddressController::class, 'store'])->name('account.addresses.store');
+        Route::patch('/{address}', [Account\AddressController::class, 'update'])->middleware([Owns::model('address')])->name('account.addresses.update');
+        Route::delete('/{address}', [Account\AddressController::class, 'destroy'])->middleware([Owns::model('address')])->name('account.addresses.destroy');
+    });
+
+    Route::get('/orders', [AccountController::class, 'orders'])->name('account.orders');
+});
 
 Route::prefix('products')->group(function() {
     Route::get('/', [ProductsController::class, 'index'])->name('products.index');

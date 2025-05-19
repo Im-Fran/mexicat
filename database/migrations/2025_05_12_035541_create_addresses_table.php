@@ -11,7 +11,7 @@ return new class() extends Migration {
     public function up(): void {
         Schema::create('addresses', function(Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('street');
             $table->string('city');
             $table->string('country');
